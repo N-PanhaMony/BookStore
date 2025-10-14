@@ -4,34 +4,27 @@
 @import "tailwindcss";
 
 @theme {
-  /* Primary brand palette */
-  --color-primary: #fdfcf9; /* Warm paper background */
-  --color-accent: #b17457; /* Soft brown for highlights */
+  --color-primary: #fdfcf9;
+  --color-accent: #b17457;
 
-  /* Light and neutral shades */
-  --color-light-100: #f4efe8; /* parchment tone */
+  --color-light-100: #f4efe8;
   --color-light-200: #e6ddd2;
 
-  /* Gray and dark text shades */
   --color-gray-100: #6b6b6b;
   --color-dark-100: #2e2a26;
 
-  /* Font */
   --font-dm-sans: DM Sans, sans-serif;
 
-  /* Breakpoint */
   --breakpoint-xs: 480px;
 
-  /* Background pattern (subtle texture or shelf pattern) */
-  --background-image-hero-pattern: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+  --background-image-book-pattern: url("/background.jpg");
 }
 
-/* Base Layer */
 @layer base {
   body {
     font-family: "DM Sans", serif;
     font-optical-sizing: auto;
-    background: var(--color-primary);
+    background: var(--color-primary); /* Fixed typo: --color-primar → --color-primary */
     color: var(--color-dark-100);
   }
 
@@ -56,17 +49,16 @@
   }
 }
 
-/* Components Layer */
 @layer components {
-  .pattern {
-    @apply bg-hero-pattern w-full h-screen bg-center bg-cover absolute z-0 opacity-10;
-  }
+  .background-pattern {
+  @apply bg-book-pattern w-full h-screen bg-center bg-cover absolute z-0 opacity-10;
+}
 
-  .wrapper {
+  .bookstore-wrapper {
     @apply px-5 py-12 xs:p-10 max-w-7xl mx-auto flex flex-col relative z-10;
   }
 
-  .favorites {
+  .featured-books {
     @apply mt-20;
 
     & ul {
@@ -78,7 +70,7 @@
     }
 
     & ul li p {
-      @apply fancy-text mt-[22px] text-nowrap;
+      @apply book-title mt-[22px] text-nowrap;
     }
 
     & ul li img {
@@ -86,7 +78,7 @@
     }
   }
 
-  .search {
+  .book-search {
     @apply w-full bg-light-100/80 px-4 py-3 rounded-lg mt-10 max-w-3xl mx-auto border border-light-200 shadow-sm;
 
     & div {
@@ -102,7 +94,7 @@
     }
   }
 
-  .all-movies {
+  .book-catalog {
     @apply space-y-9;
 
     & ul {
@@ -110,7 +102,7 @@
     }
   }
 
-  .book-card {
+  .book-item {
     @apply bg-light-100 p-5 rounded-2xl shadow-inner shadow-light-200 hover:shadow-md transition-all duration-200;
 
     & img {
@@ -156,7 +148,7 @@
   @apply bg-linear-to-r from-[#b17457] to-[#d5a27c] bg-clip-text text-transparent;
 }
 
-@utility fancy-text {
+@utility book-title {
   -webkit-text-stroke: 4px rgba(177, 116, 87, 0.3);
   font-size: 150px;
   font-family: "Bebas Neue", sans-serif;

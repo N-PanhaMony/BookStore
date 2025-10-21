@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Search from "./components/Search.jsx";
 import Spinner from "./components/Spinner.jsx";
+import BookCard from "./components/BookCard.jsx";
 
 const API_BASE_URL = "https://openlibrary.org";
 
@@ -10,34 +11,52 @@ const App = () => {
   const [bookList, setBookList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchBooks = async () => {
-    setIsLoading(true);
-    setErrorMessage("");
+  const fetchBooks = async (query = "") => {
+  setIsLoading(true);
+  setErrorMessage("");
 
-    try {
-      const endpoint = `${API_BASE_URL}/search.json?author=tolkien&sort=new`;
-      const response = await fetch(endpoint);
-      if (!response.ok) throw new Error("Failed");
+  try {
+    // request edition_count and only needed fields for smaller payload
+    const fields = [
+      "key",
+      "title",
+      "author_name",
+      "first_publish_year",
+      "cover_i",
+      "edition_count",
+    ].join(",");
 
-      const data = await response.json();
+    const endpoint = query
+      ? `${API_BASE_URL}/search.json?q=${encodeURIComponent(query)}&fields=${fields}&limit=50`
+      : `${API_BASE_URL}/search.json?q=the&fields=${fields}&limit=50`;
 
-      if (!data.docs || data.docs.length === 0) {
-        setErrorMessage("No books found");
-        setBookList([]);
-        return;
-      }
+    const response = await fetch(endpoint);
+    if (!response.ok) throw new Error("Failed to fetch");
 
-      setBookList(data.docs.slice(0,20));
-    } catch (error) {
-      console.error(`Error fetching books ${error}`);
-      setErrorMessage("Try again later...");
-    } finally {
-      setIsLoading(false);
+    const data = await response.json();
+
+    if (!data.docs || data.docs.length === 0) {
+      setErrorMessage("No books found");
+      setBookList([]);
+      return;
     }
-  };
+
+    // sort by edition_count (descending). If edition_count missing, treat as 0.
+    const sorted = data.docs
+      .map((d) => ({ ...d, edition_count: d.edition_count || 0 })) // normalize
+      .sort((a, b) => b.edition_count - a.edition_count);
+
+    setBookList(sorted.slice(0, 20));
+  } catch (error) {
+    console.error(`Error fetching books: ${error}`);
+    setErrorMessage("Try again later...");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   useEffect(() => {
-    fetchBooks();
+    fetchBooks(searchTerm);
   }, [searchTerm]);
 
   return (
@@ -47,24 +66,22 @@ const App = () => {
           <header>
             <img src="/book poster.jpg" alt="" />
             <h1>
-              Find Your <span className="text-gradient">Favorites Books</span> Here
+              Find Your <span className="text-gradient">Favorite Books</span> Here
             </h1>
             <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           </header>
 
           <section className="book-catalog">
-            <h2 className="mt-[20px]">All Books</h2>
+            <h1 className="mt-[20px]">All Books</h1>
 
             {isLoading ? (
-              <Spinner/>
+              <Spinner />
             ) : errorMessage ? (
               <p className="text-red-500">{errorMessage}</p>
             ) : (
               <ul>
                 {bookList.map((book) => (
-                  <li key={book.key} className="text-black">
-                    {book.title}
-                  </li>
+                  <BookCard key={book.key || book.title} book={book} />
                 ))}
               </ul>
             )}

@@ -110,7 +110,8 @@
     @apply bg-light-100 p-5 rounded-2xl shadow-inner shadow-light-200 hover:shadow-md transition-all duration-200;
 
     & img {
-      @apply rounded-lg h-auto w-full object-cover;
+  @apply rounded-lg w-full object-cover;
+  /* don't force h-auto — let the container (aspect) control height */
     }
 
     & h3 {

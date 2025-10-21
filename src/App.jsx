@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Search from "./components/Search.jsx";
+import Spinner from "./components/Spinner.jsx";
 
 const API_BASE_URL = "https://openlibrary.org";
 
@@ -7,7 +8,7 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [bookList, setBookList] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchBooks = async () => {
     setIsLoading(true);
@@ -19,7 +20,6 @@ const App = () => {
       if (!response.ok) throw new Error("Failed");
 
       const data = await response.json();
-      console.log(data);
 
       if (!data.docs || data.docs.length === 0) {
         setErrorMessage("No books found");
@@ -27,7 +27,7 @@ const App = () => {
         return;
       }
 
-      setBookList(data.docs);
+      setBookList(data.docs.slice(0,20));
     } catch (error) {
       console.error(`Error fetching books ${error}`);
       setErrorMessage("Try again later...");
@@ -53,12 +53,12 @@ const App = () => {
           </header>
 
           <section className="book-catalog">
-            <h1>All Books</h1>
+            <h2 className="mt-[20px]">All Books</h2>
 
             {isLoading ? (
-              <p className="text-black">Loading...</p>
+              <Spinner/>
             ) : errorMessage ? (
-              <p className="text-black">{errorMessage}</p>
+              <p className="text-red-500">{errorMessage}</p>
             ) : (
               <ul>
                 {bookList.map((book) => (

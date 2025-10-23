@@ -1,7 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
 
+
 @import "tailwindcss";
+main {
+  @apply min-h-screen relative pb-10; /* bottom padding for footer */
+}
 
 @theme {
   --color-primary: #fdfcf9;
@@ -83,7 +87,7 @@
   }
 
   .book-search {
-    @apply w-full bg-light-100/80 px-4 py-3 rounded-lg mt-10 max-w-3xl mx-auto border border-light-200 shadow-sm;
+    @apply w-full bg-light-100/80 px-4 py-2 rounded-3xl mt-10 max-w-3xl mx-auto border border-light-200 shadow-sm;
 
     & div {
       @apply relative flex items-center;
@@ -98,16 +102,12 @@
     }
   }
 
-  .book-catalog {
-    @apply space-y-9;
-
-    & ul {
-      @apply grid grid-cols-1 gap-5 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4;
-    }
+  .book-catalog ul {
+  @apply grid grid-cols-1 gap-5 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4;
   }
 
   .book-item {
-    @apply bg-light-100 p-5 rounded-2xl shadow-inner shadow-light-200 hover:shadow-md transition-all duration-200;
+    @apply bg-light-100 p-5 rounded-2xl shadow-inner shadow-light-200 hover:shadow-md hover:scale-105 transition-all duration-200;
 
     & img {
   @apply rounded-lg w-full object-cover;

@@ -67,7 +67,7 @@ useEffect(() => {
   return (
     <main>
       <div className="pattern">
-        <div className="wrapper">
+        <div className="max-w-7xl mx-auto sm:px-10">
           <header>
             <img src="/book poster.jpg" alt="" />
             <h1>
@@ -77,7 +77,7 @@ useEffect(() => {
           </header>
 
           <section className="book-catalog">
-            <h1 className="mt-[20px]">All Books</h1>
+            <h1 className="mt-5 mb-5">All Books</h1>
 
             {isLoading ? (
               <Spinner />
@@ -93,6 +93,11 @@ useEffect(() => {
           </section>
         </div>
       </div>
+
+      <footer className="mt-5 py-5 text-center text-gray-500">
+        © 2025 My BookStore. All rights reserved.
+      </footer>
+
     </main>
   );
 };

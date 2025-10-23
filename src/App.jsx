@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import Search from "./components/Search.jsx";
 import Spinner from "./components/Spinner.jsx";
 import BookCard from "./components/BookCard.jsx";
+import useDebounce from "./hooks/useDebounce.js";
+
 
 const API_BASE_URL = "https://www.googleapis.com/books/v1/volumes";
 
@@ -10,6 +12,9 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [bookList, setBookList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const debouncedSearch = useDebounce(searchTerm, 300);
+
 
   const fetchBooks = async (query = "") => {
   setIsLoading(true);
@@ -55,9 +60,9 @@ const App = () => {
   }
 };
 
-  useEffect(() => {
-    fetchBooks(searchTerm);
-  }, [searchTerm]);
+useEffect(() => {
+  fetchBooks(debouncedSearch);
+}, [debouncedSearch]);
 
   return (
     <main>

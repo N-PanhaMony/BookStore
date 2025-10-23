@@ -3,7 +3,7 @@ import Search from "./components/Search.jsx";
 import Spinner from "./components/Spinner.jsx";
 import BookCard from "./components/BookCard.jsx";
 
-const API_BASE_URL = "https://openlibrary.org";
+const API_BASE_URL = "https://www.googleapis.com/books/v1/volumes";
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,37 +16,37 @@ const App = () => {
   setErrorMessage("");
 
   try {
-    // request edition_count and only needed fields for smaller payload
-    const fields = [
-      "key",
-      "title",
-      "author_name",
-      "first_publish_year",
-      "cover_i",
-      "edition_count",
-    ].join(",");
-
-    const endpoint = query
-      ? `${API_BASE_URL}/search.json?q=${encodeURIComponent(query)}&fields=${fields}&limit=50`
-      : `${API_BASE_URL}/search.json?q=the&fields=${fields}&limit=50`;
+    // Google Books: q=search term, maxResults up to 40
+    const q = query ? query : "the";
+    const endpoint = `${API_BASE_URL}?q=${encodeURIComponent(q)}&maxResults=20`;
 
     const response = await fetch(endpoint);
     if (!response.ok) throw new Error("Failed to fetch");
 
     const data = await response.json();
 
-    if (!data.docs || data.docs.length === 0) {
+    if (!data.items || data.items.length === 0) {
       setErrorMessage("No books found");
       setBookList([]);
       return;
     }
 
-    // sort by edition_count (descending). If edition_count missing, treat as 0.
-    const sorted = data.docs
-      .map((d) => ({ ...d, edition_count: d.edition_count || 0 })) // normalize
-      .sort((a, b) => b.edition_count - a.edition_count);
+    // Map Google Books structure to the shape your app expects:
+    const formatted = data.items.map((item) => {
+      const v = item.volumeInfo || {};
+      return {
+        key: item.id,
+        title: v.title || "Untitled",
+        author_name: v.authors ? v.authors.join(", ") : ["Unknown Author"],
+        first_publish_year: v.publishedDate ? v.publishedDate.split("-")[0] : null,
+        // For compatibility with your BookCard component, put the image URL in cover_i
+        cover_i: v.imageLinks ? v.imageLinks.thumbnail || v.imageLinks.smallThumbnail : null,
+        // you can keep edition_count if your UI relied on it; Google doesn't provide it, so set 0
+        edition_count: 0,
+      };
+    });
 
-    setBookList(sorted.slice(0, 20));
+    setBookList(formatted);
   } catch (error) {
     console.error(`Error fetching books: ${error}`);
     setErrorMessage("Try again later...");

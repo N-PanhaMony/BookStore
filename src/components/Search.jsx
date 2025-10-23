@@ -4,7 +4,7 @@ const Search = ({searchTerm, setSearchTerm}) => {
   return (
     <div className='book-search'>
       <div>
-        <img src='/public/searchh.svg'/>
+        <img src='/searchh.svg' alt="Search icon" />
 
         <input
           type='text'

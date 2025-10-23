@@ -5,7 +5,7 @@ import BookCard from "./components/BookCard.jsx";
 import useDebounce from "./hooks/useDebounce.js";
 
 
-const API_BASE_URL = "https://www.googleapis.com/books/v1/volumes";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -77,7 +77,7 @@ useEffect(() => {
           </header>
 
           <section className="book-catalog">
-            <h1 className="mt-5 mb-5">All Books</h1>
+            <h1 className="mt-5 mb-5">Popular Books</h1>
 
             {isLoading ? (
               <Spinner />
